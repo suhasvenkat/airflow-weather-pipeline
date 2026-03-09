@@ -1,149 +1,101 @@
-# Airflow Data Pipeline for Deep Learning–Based Energy Forecasting
+<h1>⚡ Energy Forecasting Research Pipeline — Airflow + Deep Learning</h1>
 
-This repository contains an **end-to-end data engineering and deep learning research pipeline** built using **Apache Airflow**, **Python**, **PostgreSQL**, and **Docker**.  
-The project automates data ingestion, transformation, and storage, and supports **deep learning models for energy consumption forecasting** as part of an academic research study.
+<p>
+  <img src="https://img.shields.io/badge/Airflow-Orchestration-017CEE?style=for-the-badge&logo=apacheairflow&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Models-LSTM%20%7C%20Transformer%20%7C%20SSL-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Storage-PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Container-Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge"/>
+</p>
 
----
-
-## 🚀 Project Overview
-
-The goal of this project is to design a **reproducible and scalable pipeline** that connects **data engineering workflows** with **deep learning research**.
-
-The system:
-- Ingests raw CSV datasets automatically
-- Cleans and transforms data consistently
-- Stores structured data in PostgreSQL
-- Feeds prepared datasets into deep learning models
-- Enables reproducible experiments for time-series energy forecasting
-
-This architecture reflects a real-world ML system where **Apache Airflow manages data orchestration** and **deep learning models handle prediction and analysis**.
+End-to-end data engineering and deep learning pipeline for building energy consumption forecasting.
+Compares **LSTM**, **Transformer**, and **Self-Supervised Learning (SSL)** architectures on real building + weather data.
 
 ---
 
-## 🧰 Tech Stack
+## 📌 What it does
 
-- **Apache Airflow (Astro Runtime)** – Workflow orchestration  
-- **Python** – ETL and modeling logic  
-- **Pandas & NumPy** – Data preprocessing  
-- **PostgreSQL** – Structured data storage  
-- **Docker & Docker Compose** – Containerized execution  
-- **TensorFlow / Keras** – Deep learning models  
-- **pgAdmin** – Database inspection  
+Automates the full ML research workflow:
+
+1. 📥 Ingests raw CSV datasets (building metadata + weather data)
+2. 🔄 Cleans, transforms, and validates the data via Airflow DAG
+3. 🗄️ Loads structured data into PostgreSQL
+4. 🤖 Feeds prepared datasets into deep learning models
+5. 📊 Produces reproducible experiment results across model architectures
 
 ---
 
-## 📁 Project Structure
+## 🧠 Models
 
-airflow_data_pipeline/
+| Model | Purpose | Notes |
+|-------|---------|-------|
+| **LSTM** | Baseline time-series forecasting | Captures temporal dependencies |
+| **Transformer** | Long-range pattern detection | Outperforms LSTM on complex sequences |
+| **Self-Supervised (SSL)** | Robustness under sparse/noisy data | Pretrained then fine-tuned on labeled data |
+
+SSL model evaluated under 3 conditions: ✅ clean data · ⚠️ sparse data · ❌ simulated sensor failures
+
+---
+
+## 🛠️ Stack
+
+![Apache Airflow](https://img.shields.io/badge/Apache%20Airflow-017CEE?style=for-the-badge&logo=apacheairflow&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
+![Keras](https://img.shields.io/badge/Keras-D00000?style=for-the-badge&logo=keras&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
+![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white)
+
+---
+
+## 📁 Project structure
+```
+airflow-energy-pipeline/
 ├── dags/
-│ └── load_excel_to_postgres.py # Airflow DAG
-├── include/
-│ └── data/
-│ ├── building_metadata.csv # Building metadata
-│ └── weather.csv # Weather data
-├── tests/
-│ └── dags/ # DAG tests
+│   └── load_excel_to_postgres.py   # Airflow DAG
+├── include/data/
+│   ├── building_metadata.csv
+│   └── weather.csv
+├── src/                            # Model training scripts
+├── figures/                        # Training curves & evaluation plots
+├── tables/                         # Result tables
+├── tests/dags/                     # DAG unit tests
 ├── Dockerfile
 ├── requirements.txt
-├── packages.txt
-├── airflow_settings.yaml
-├── config.yaml
 └── README.md
-
-
----
-
-## 🔄 ETL Pipeline Workflow
-
-### 1. Extract
-- Reads raw CSV files from the `include/data/` directory
-
-### 2. Transform
-- Standardizes column names
-- Handles missing and inconsistent values
-- Removes duplicates
-- Prepares features required for forecasting models
-
-### 3. Load
-- Stores transformed data into PostgreSQL tables:
-  - `building`
-  - `weather`
-
-### 4. Orchestration
-- The entire workflow is managed using an Apache Airflow DAG
-- DAGs can be triggered manually or scheduled
+```
 
 ---
 
-## 🧠 Deep Learning & Research Component
-
-The data processed through this pipeline is used for **deep learning–based energy forecasting research**.  
-The pipeline ensures **consistent, reproducible, and scalable data preparation** across multiple experiments.
-
----
-
-## 🤖 Deep Learning Models Implemented
-
-### 🔹 LSTM (Long Short-Term Memory)
-- Baseline model for time-series energy forecasting
-- Captures temporal dependencies in building energy consumption
-- Evaluated using MAE and error distributions
-
-### 🔹 Transformer-Based Model
-- Designed to capture long-range temporal relationships
-- Compared against LSTM for accuracy and generalization
-- Better performance on complex temporal patterns
-
-### 🔹 Self-Supervised Pretraining (SSL)
-- Models pretrained using self-supervised learning techniques
-- Fine-tuned on labeled energy consumption data
-- Improves robustness under:
-  - Sparse data conditions
-  - Noisy inputs
-  - Simulated sensor failures
-
----
-
-## 🔬 Research Questions Addressed
-
-This project supports the following research questions:
-
-- **RQ3:**  
-  *What impact does self-supervised pretraining have on the robustness of deep energy forecasting models?*
-
-- **RQ4:**  
-  *Does integrating physical thermodynamic constraints into deep learning models improve forecast realism and generalization compared to purely data-driven approaches?*
-
----
-
-## ⚙️ Role of Airflow in the Research
-
-Apache Airflow is used to:
-- Automate raw data ingestion
-- Ensure consistent preprocessing across experiments
-- Enable reproducible dataset generation
-- Support scalable experimentation with multiple model variants
-
-This separation mirrors real-world ML system design:
-- **Airflow** → Data orchestration  
-- **Deep Learning Models** → Prediction and evaluation  
-
----
-
-## 📊 Model Outputs & Evaluation
-
-The experiments produced:
-- Training and validation loss curves
-- Prediction vs actual energy consumption plots
-- Error distribution and robustness analysis
-- Performance comparison across clean, sparse, and failure scenarios
-
-All figures used in the final research report were generated using data prepared by this pipeline.
-
----
-
-## ▶️ How to Run the Project
-
-### 1. Start Airflow
+## ▶️ How to run
 ```bash
+# Start Airflow locally
 astro dev start
+
+# Trigger the DAG via Airflow UI at localhost:8080
+# Or schedule it to run automatically
+```
+
+---
+
+## 🔬 Research questions
+
+- What impact does self-supervised pretraining have on forecasting robustness under sparse or noisy conditions?
+- Does integrating physical constraints into deep learning models improve forecast accuracy vs purely data-driven approaches?
+
+---
+
+## 📊 Evaluation
+
+Metrics used: **MAE**, training/validation loss curves, error distribution analysis, robustness comparison across clean/sparse/failure scenarios.
+
+---
+
+## 🔮 What I'd add next
+
+- [ ] MLflow experiment tracking
+- [ ] Automated model retraining on new data
+- [ ] FastAPI endpoint for live energy forecasts
+- [ ] Grafana dashboard for real-time monitoring
