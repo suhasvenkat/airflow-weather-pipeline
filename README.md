@@ -1,101 +1,138 @@
-<h1>⚡ Energy Forecasting Research Pipeline — Airflow + Deep Learning</h1>
+# Airflow Energy Forecasting Pipeline 🔋
 
-<p>
-  <img src="https://img.shields.io/badge/Airflow-Orchestration-017CEE?style=for-the-badge&logo=apacheairflow&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Models-LSTM%20%7C%20Transformer%20%7C%20SSL-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Storage-PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Container-Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
-  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge"/>
-</p>
-
-End-to-end data engineering and deep learning pipeline for building energy consumption forecasting.
-Compares **LSTM**, **Transformer**, and **Self-Supervised Learning (SSL)** architectures on real building + weather data.
+**End-to-end ML pipeline: Airflow orchestration + LSTM/Transformer/SSL for building energy forecasting**  
+1,000+ buildings · MSc Data Science research · Fully containerized with Docker
 
 ---
 
-## 📌 What it does
+## Overview
 
-Automates the full ML research workflow:
+A production-style data engineering and deep learning research pipeline that automates the full journey from raw CSV ingestion to trained forecasting models — built as part of MSc Data Science research on self-supervised learning for energy systems.
 
-1. 📥 Ingests raw CSV datasets (building metadata + weather data)
-2. 🔄 Cleans, transforms, and validates the data via Airflow DAG
-3. 🗄️ Loads structured data into PostgreSQL
-4. 🤖 Feeds prepared datasets into deep learning models
-5. 📊 Produces reproducible experiment results across model architectures
+**Research questions addressed:**
+- Does self-supervised pretraining improve model robustness under sensor failure and sparse data?
+- How do LSTM, Transformer, and SSL models compare on building energy consumption forecasting?
 
 ---
 
-## 🧠 Models
+## Results
 
-| Model | Purpose | Notes |
-|-------|---------|-------|
-| **LSTM** | Baseline time-series forecasting | Captures temporal dependencies |
-| **Transformer** | Long-range pattern detection | Outperforms LSTM on complex sequences |
-| **Self-Supervised (SSL)** | Robustness under sparse/noisy data | Pretrained then fine-tuned on labeled data |
+| Model | Dataset | Key Finding |
+|---|---|---|
+| LSTM | ASHRAE (1,000+ buildings) | Baseline temporal model |
+| Transformer | ASHRAE (1,000+ buildings) | Better on complex patterns |
+| SSL pretrained | ASHRAE (1,000+ buildings) | Most robust under sensor failure simulation |
 
-SSL model evaluated under 3 conditions: ✅ clean data · ⚠️ sparse data · ❌ simulated sensor failures
-
----
-
-## 🛠️ Stack
-
-![Apache Airflow](https://img.shields.io/badge/Apache%20Airflow-017CEE?style=for-the-badge&logo=apacheairflow&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
-![Keras](https://img.shields.io/badge/Keras-D00000?style=for-the-badge&logo=keras&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
-![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white)
+SSL pretraining improved robustness in sparse data and simulated sensor-failure scenarios — validating the research hypothesis.
 
 ---
 
-## 📁 Project structure
+## Architecture
+
+```
+Raw CSV Data (ASHRAE dataset)
+   ↓
+[Airflow DAG] — scheduled ingestion & transformation
+   ↓
+[PostgreSQL] — structured storage (building + weather tables)
+   ↓
+[Deep Learning Models]
+   ├── LSTM          — temporal baseline
+   ├── Transformer   — long-range dependency capture  
+   └── SSL           — self-supervised pretraining → fine-tune
+   ↓
+Model outputs: MAE, loss curves, prediction vs actual plots
+```
+
+---
+
+## Pipeline stages
+
+### 1. Extract
+- Reads ASHRAE building metadata and weather CSV files
+- Handles multiple building types across 1,000+ sites
+
+### 2. Transform
+- Standardizes column names and timestamps
+- Handles missing values and sensor anomalies
+- Prepares feature matrices for time-series models
+
+### 3. Load
+- Stores structured data into PostgreSQL (`building`, `weather` tables)
+- Enables reproducible dataset generation across experiments
+
+### 4. Model training
+- Airflow DAG triggers model training after data load
+- Each model variant (LSTM/Transformer/SSL) runs independently
+- Results exported to `/figures/` for research report
+
+---
+
+## Tech stack
+
+| Component | Technology |
+|---|---|
+| Orchestration | Apache Airflow (Astro Runtime) |
+| Containerization | Docker + Docker Compose |
+| Storage | PostgreSQL |
+| Data processing | Python · Pandas · NumPy |
+| Deep learning | TensorFlow · Keras |
+| DB inspection | pgAdmin |
+
+---
+
+## Project structure
+
 ```
 airflow-energy-pipeline/
 ├── dags/
-│   └── load_excel_to_postgres.py   # Airflow DAG
+│   └── load_excel_to_postgres.py    # Main Airflow DAG
+├── src/
+│   └── models/                      # LSTM, Transformer, SSL implementations
 ├── include/data/
-│   ├── building_metadata.csv
-│   └── weather.csv
-├── src/                            # Model training scripts
-├── figures/                        # Training curves & evaluation plots
-├── tables/                         # Result tables
-├── tests/dags/                     # DAG unit tests
+│   ├── building_metadata.csv        # ASHRAE building metadata
+│   └── weather.csv                  # Weather feature data
+├── figures/                         # Model output charts (loss curves, predictions)
 ├── Dockerfile
+├── docker-compose.yml
 ├── requirements.txt
-└── README.md
+└── config.yaml
 ```
 
 ---
 
-## ▶️ How to run
+## How to run
+
 ```bash
-# Start Airflow locally
+# Start Airflow (requires Astro CLI)
 astro dev start
 
-# Trigger the DAG via Airflow UI at localhost:8080
-# Or schedule it to run automatically
+# Or with Docker Compose directly
+docker-compose up -d
+
+# Trigger DAG manually
+airflow dags trigger load_excel_to_postgres
 ```
 
 ---
 
-## 🔬 Research questions
+## Model outputs
 
-- What impact does self-supervised pretraining have on forecasting robustness under sparse or noisy conditions?
-- Does integrating physical constraints into deep learning models improve forecast accuracy vs purely data-driven approaches?
+The pipeline generates:
+- Training/validation loss curves per model
+- Prediction vs actual energy consumption plots
+- Error distribution analysis across clean, sparse, and sensor-failure scenarios
+- Performance comparison: LSTM vs Transformer vs SSL
+
+All figures used in the MSc research report were generated from data prepared by this pipeline.
 
 ---
 
-## 📊 Evaluation
+## Related projects
 
-Metrics used: **MAE**, training/validation loss curves, error distribution analysis, robustness comparison across clean/sparse/failure scenarios.
+- [Support Mail Agent](https://github.com/suhasvenkat/Support_Mail_Agent) — RAG pipeline with LangGraph + FAISS · [Live Demo](https://supportmailagent-fkhguftdphxuvvhkkj7fmh.streamlit.app)
+- [Bone Fracture Detection](https://github.com/suhasvenkat/bone-fracture-detection) — ResNet-50, 88% accuracy · [Live Demo](https://bone-fracture-detection-ayxoamgewsy78kfc5ajtxp.streamlit.app/)
 
 ---
 
-## 🔮 What I'd add next
-
-- [ ] MLflow experiment tracking
-- [ ] Automated model retraining on new data
-- [ ] FastAPI endpoint for live energy forecasts
-- [ ] Grafana dashboard for real-time monitoring
+**Built by [Suhas Venkat](https://suhasvenkat.github.io)** · [LinkedIn](https://linkedin.com/in/suhas-venkat)
